@@ -8,11 +8,9 @@ export default function AddACountry(props) {
     }
 
     const buttonHandler = () => {
-        console.log("button clicked in the add a country component", newCountryName)
         props.addACountryToTheList(newCountryName)
     }
 
-    console.log("what are my props??", props)
     return (
         <div>
             <input value={newCountryName} onChange={inputHandler }/>

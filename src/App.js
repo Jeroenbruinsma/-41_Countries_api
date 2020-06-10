@@ -11,29 +11,45 @@ function App() {
   
   const getTheCountries = async () => {
     const response = await Axios.get(apiUrl)
-    set_countries(response.data)
+    const smallAmountOfCountries = response.data
+    smallAmountOfCountries.length = 10.
+    const listOfCountriesWithCoronaPatients = smallAmountOfCountries.map( country => {
+      const copyOfCountry = {...country}
+      copyOfCountry.coronaPatietents = 0;
+      return copyOfCountry
+    })
+    set_countries(listOfCountriesWithCoronaPatients)
   }
 
   useEffect( ()=> {
-    // getTheCountries()
+    getTheCountries()
   },[])
   
   
-  const sayHello = (data) => {
-    console.log("This is the say hello function of app.js",data)
+  const increasePatientCounter = (countryToChange) => {
+    const updatedList = countries.map(country => {
+      if(country.name === countryToChange){
+        const copyOfCountry =  {...country}
+        copyOfCountry.coronaPatietents = copyOfCountry.coronaPatietents + 1
+        return copyOfCountry
+      }
+      return country
+    })
+    set_countries(updatedList)
   }
 
   const addACountryToTheList = (name) => {
-    console.log("new country??", name);
-
     set_countries([  ...countries,   {
                     name: name,
                     capital: "Unknown capital",
                     area: 10000,
                     alpha3Code: name,
+                    coronaPatietents: 0
                 }
         ])
   }
+
+  const sortedCountries = [...countries].sort( (a, b) => b.coronaPatietents - a.coronaPatietents  )
   
   return (
     <div className="App">
@@ -41,11 +57,11 @@ function App() {
 
     <button onClick={getTheCountries}> Get the countries</button>
 
-      {countries.map( countryCard => {
+      {sortedCountries.map( countryCard => {
         return (
           <CountryCard  key={countryCard.alpha3Code} 
                         data={countryCard} 
-                        sayHelloInParent={sayHello}
+                        increasePatientCounter={increasePatientCounter}
                         />
         )
       })}
